@@ -3,14 +3,14 @@ import Head from "next/head";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const C = {
-  bg: "#0a0f1e", card: "#111827", card2: "#1a2235",
-  border: "#1e3a5f", borderLight: "#2d4a6e",
-  text: "#e8f4fd", muted: "#6b8cad",
-  paid: "#10b981", unpaid: "#f43f5e",
-  accent: "#3b82f6",
-  warning: "#f59e0b",
+  bg: "#f1f5f9", card: "#ffffff", card2: "#f8fafc",
+  border: "#e2e8f0", borderLight: "#cbd5e1",
+  text: "#0f172a", muted: "#64748b",
+  paid: "#059669", unpaid: "#e11d48",
+  accent: "#2563eb",
+  warning: "#d97706",
 };
-const BCOLS = ["#3b82f6", "#a78bfa", "#34d399", "#fb923c", "#f472b6", "#38bdf8"];
+const BCOLS = ["#2563eb", "#7c3aed", "#059669", "#ea580c", "#db2777", "#0891b2"];
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
@@ -225,7 +225,7 @@ export default function Dashboard() {
               <div style={{ background: C.card, borderRadius: 12, border: `1px solid ${C.border}`, overflow: "hidden" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                   <thead>
-                    <tr style={{ background: "#070d1a", borderBottom: `1px solid ${C.border}` }}>
+                    <tr style={{ background: "#f1f5f9", borderBottom: `1px solid ${C.border}` }}>
                       {["בניין", "מס׳ דירה", "סטטוס"].map(h => (
                         <th key={h} style={{ padding: "10px 16px", textAlign: "right", color: C.muted, fontWeight: 600, fontSize: 12 }}>{h}</th>
                       ))}
@@ -233,7 +233,7 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {filteredData.map((row, i) => (
-                      <tr key={i} style={{ borderBottom: `1px solid ${C.border}18`, background: i % 2 === 0 ? "transparent" : "#ffffff04" }}>
+                      <tr key={i} style={{ borderBottom: `1px solid ${C.border}18`, background: i % 2 === 0 ? "transparent" : "#f8fafc" }}>
                         <td style={{ padding: "9px 16px", color: C.muted }}>{row.building}</td>
                         <td style={{ padding: "9px 16px", fontWeight: 700, fontSize: 14 }}>{row.apartment}</td>
                         <td style={{ padding: "9px 16px" }}>
