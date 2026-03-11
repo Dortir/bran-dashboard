@@ -141,32 +141,38 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* Summary */}
-              <div className="summary">
-
-                {/* Donut */}
-                <div style={{ background:C.card, borderRadius:16, padding:20, border:`1px solid ${C.border}`, boxShadow:"0 1px 3px rgba(0,0,0,0.05)" }}>
-                  <div style={{ fontSize:14, fontWeight:700, marginBottom:8, textAlign:"center" }}>כלל המתחם</div>
-                  <ResponsiveContainer width="100%" height={160}>
+              {/* Summary: horizontal donut bar + building cards grid */}
+              <div style={{ background:C.card, borderRadius:16, padding:"14px 20px", border:`1px solid ${C.border}`, boxShadow:"0 1px 3px rgba(0,0,0,0.05)", marginBottom:16, display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
+                <div style={{ fontSize:14, fontWeight:700, whiteSpace:"nowrap" }}>כלל המתחם</div>
+                <div style={{ width:80, height:80, flexShrink:0 }}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={46} outerRadius={74}
+                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={26} outerRadius={38}
                         dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
                         <Cell fill={pctColor(totalPct)} /><Cell fill="#e2e8f0" />
                       </Pie>
                     </PieChart>
                   </ResponsiveContainer>
-                  <div style={{ textAlign:"center", marginTop:-4 }}>
-                    <div style={{ fontSize:30, fontWeight:900, color:pctColor(totalPct) }}>{totalPct}%</div>
-                    <div style={{ fontSize:11, color:C.muted }}>שיעור גבייה</div>
+                </div>
+                <div style={{ display:"flex", alignItems:"baseline", gap:8 }}>
+                  <div style={{ fontSize:40, fontWeight:900, color:pctColor(totalPct), lineHeight:1 }}>{totalPct}%</div>
+                  <div style={{ fontSize:12, color:C.muted }}>שיעור גבייה</div>
+                </div>
+                <div style={{ height:40, width:1, background:C.border, flexShrink:0 }} />
+                <div style={{ display:"flex", gap:24 }}>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:24, fontWeight:800, color:C.paid }}>{totalPaid}</div>
+                    <div style={{ fontSize:11, color:C.muted }}>שילמו</div>
                   </div>
-                  <div style={{ display:"flex", justifyContent:"center", gap:14, marginTop:12, fontSize:12 }}>
-                    <span style={{ color:C.paid }}>● שולם ({totalPaid})</span>
-                    <span style={{ color:C.unpaid }}>● לא שולם ({totalUnpaid})</span>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:24, fontWeight:800, color:C.unpaid }}>{totalUnpaid}</div>
+                    <div style={{ fontSize:11, color:C.muted }}>לא שילמו</div>
                   </div>
                 </div>
+              </div>
 
-                {/* Building cards */}
-                <div className="bldg-grid">
+              {/* Building cards */}
+              <div className="bldg-grid" style={{ marginBottom:20 }}>
                   {buildingStats.map(b => {
                     const isSel = selectedBuilding === b.name;
                     const mp = [{ value: b.paid || 0.001 }, { value: b.unpaid }];
@@ -221,7 +227,7 @@ export default function Dashboard() {
                     );
                   })}
                 </div>
-              </div>
+
 
               {/* Filters */}
               <div className="filters">
