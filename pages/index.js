@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
-import {
-  PieChart, Pie, Cell,
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
-} from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const C = {
   bg: "#0a0f1e", card: "#111827", card2: "#1a2235",
@@ -150,8 +147,10 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* Charts */}
-              <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 14, marginBottom: 18 }}>
+              {/* Charts + Building cards */}
+              <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 14, marginBottom: 20 }}>
+
+                {/* Donut - כלל המתחם */}
                 <div style={{ background: C.card, borderRadius: 12, padding: 16, border: `1px solid ${C.border}` }}>
                   <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>כלל המתחם</div>
                   <ResponsiveContainer width="100%" height={160}>
@@ -172,40 +171,45 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div style={{ background: C.card, borderRadius: 12, padding: 16, border: `1px solid ${C.border}` }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>גבייה לפי בניין</div>
-                  <ResponsiveContainer width="100%" height={190}>
-                    <BarChart data={buildingStats} barSize={28} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                      <XAxis dataKey="name" tick={{ fill: C.muted, fontSize: 11 }} />
-                      <YAxis tick={{ fill: C.muted, fontSize: 10 }} />
-                      <Tooltip
-                        contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, direction: "rtl", fontSize: 12 }}
-                        formatter={(v, n) => [`${v} דירות`, n]}
-                      />
-                      <Legend wrapperStyle={{ fontSize: 12, direction: "rtl" }} />
-                      <Bar dataKey="שולם" stackId="a" fill={C.paid} />
-                      <Bar dataKey="לא שולם" stackId="a" fill={C.unpaid} radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
+                {/* Building cards */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 10 }}>
+                  {buildingStats.map(b => (
+                    <div key={b.name}
+                      onClick={() => setSelectedBuilding(b.name === selectedBuilding ? "כל המתחם" : b.name)}
+                      style={{
+                        background: C.card,
+                        border: `1px solid ${selectedBuilding === b.name ? b.color : C.border}`,
+                        borderTop: `3px solid ${b.color}`,
+                        borderRadius: 12, padding: "14px 16px", cursor: "pointer",
+                        transition: "border 0.15s",
+                      }}>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: b.color, marginBottom: 10 }}>{b.name}</div>
 
-              {/* Building badges */}
-              <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
-                {buildingStats.map(b => (
-                  <div key={b.name}
-                    onClick={() => setSelectedBuilding(b.name === selectedBuilding ? "כל המתחם" : b.name)}
-                    style={{
-                      background: C.card, border: `1px solid ${selectedBuilding === b.name ? b.color : C.border}`,
-                      borderRadius: 20, padding: "5px 14px", fontSize: 12,
-                      display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
-                    }}>
-                    <span style={{ color: b.color, fontWeight: 700 }}>{b.name}</span>
-                    <span style={{ color: C.borderLight }}>|</span>
-                    <span style={{ color: pctColor(b.pct), fontWeight: 700 }}>{b.pct}%</span>
-                    <span style={{ color: C.muted }}>({b["שולם"]}/{b.total})</span>
-                  </div>
-                ))}
+                      {/* Progress bar */}
+                      <div style={{ height: 6, background: C.border, borderRadius: 4, marginBottom: 10, overflow: "hidden" }}>
+                        <div style={{
+                          height: "100%", borderRadius: 4,
+                          width: `${b.pct}%`,
+                          background: pctColor(b.pct),
+                          transition: "width 0.4s ease",
+                        }} />
+                      </div>
+
+                      {/* Numbers */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                        <div>
+                          <div style={{ fontSize: 22, fontWeight: 800, color: pctColor(b.pct), lineHeight: 1 }}>{b.pct}%</div>
+                          <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>שיעור גבייה</div>
+                        </div>
+                        <div style={{ textAlign: "left" }}>
+                          <div style={{ fontSize: 13, color: C.paid, fontWeight: 600 }}>✓ {b["שולם"]} שילמו</div>
+                          <div style={{ fontSize: 13, color: C.unpaid, fontWeight: 600 }}>✗ {b["לא שולם"]} לא שילמו</div>
+                          <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>מתוך {b.total} דירות</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Filters */}
