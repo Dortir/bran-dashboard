@@ -172,43 +172,80 @@ export default function Dashboard() {
                 </div>
 
                 {/* Building cards */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 10 }}>
-                  {buildingStats.map(b => (
-                    <div key={b.name}
-                      onClick={() => setSelectedBuilding(b.name === selectedBuilding ? "כל המתחם" : b.name)}
-                      style={{
-                        background: C.card,
-                        border: `1px solid ${selectedBuilding === b.name ? b.color : C.border}`,
-                        borderTop: `3px solid ${b.color}`,
-                        borderRadius: 12, padding: "14px 16px", cursor: "pointer",
-                        transition: "border 0.15s",
-                      }}>
-                      <div style={{ fontSize: 13, fontWeight: 800, color: b.color, marginBottom: 10 }}>{b.name}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(175px, 1fr))", gap: 12 }}>
+                  {buildingStats.map(b => {
+                    const isSelected = selectedBuilding === b.name;
+                    const miniPie = [{ value: b["שולם"] }, { value: b["לא שולם"] }];
+                    return (
+                      <div key={b.name}
+                        onClick={() => setSelectedBuilding(isSelected ? "כל המתחם" : b.name)}
+                        style={{
+                          background: C.card,
+                          border: `2px solid ${isSelected ? b.color : C.border}`,
+                          borderRadius: 16,
+                          padding: "16px",
+                          cursor: "pointer",
+                          transition: "all 0.2s",
+                          boxShadow: isSelected
+                            ? `0 4px 20px ${b.color}33`
+                            : "0 1px 4px rgba(0,0,0,0.06)",
+                        }}>
 
-                      {/* Progress bar */}
-                      <div style={{ height: 6, background: C.border, borderRadius: 4, marginBottom: 10, overflow: "hidden" }}>
-                        <div style={{
-                          height: "100%", borderRadius: 4,
-                          width: `${b.pct}%`,
-                          background: pctColor(b.pct),
-                          transition: "width 0.4s ease",
-                        }} />
-                      </div>
+                        {/* Header */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                          <div style={{
+                            fontSize: 15, fontWeight: 800, color: b.color,
+                            background: b.color + "18", borderRadius: 8,
+                            padding: "3px 10px",
+                          }}>{b.name}</div>
+                          <div style={{ fontSize: 10, color: C.muted }}>{b.total} דירות</div>
+                        </div>
 
-                      {/* Numbers */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                        <div>
-                          <div style={{ fontSize: 22, fontWeight: 800, color: pctColor(b.pct), lineHeight: 1 }}>{b.pct}%</div>
-                          <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>שיעור גבייה</div>
+                        {/* Mini pie + big % */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                          <div style={{ width: 64, height: 64, flexShrink: 0 }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                              <PieChart>
+                                <Pie data={miniPie} cx="50%" cy="50%"
+                                  innerRadius={20} outerRadius={30}
+                                  dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
+                                  <Cell fill={pctColor(b.pct)} />
+                                  <Cell fill={C.border} />
+                                </Pie>
+                              </PieChart>
+                            </ResponsiveContainer>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 28, fontWeight: 900, color: pctColor(b.pct), lineHeight: 1 }}>{b.pct}%</div>
+                            <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>שיעור גבייה</div>
+                          </div>
                         </div>
-                        <div style={{ textAlign: "left" }}>
-                          <div style={{ fontSize: 13, color: C.paid, fontWeight: 600 }}>✓ {b["שולם"]} שילמו</div>
-                          <div style={{ fontSize: 13, color: C.unpaid, fontWeight: 600 }}>✗ {b["לא שולם"]} לא שילמו</div>
-                          <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>מתוך {b.total} דירות</div>
+
+                        {/* Progress bar */}
+                        <div style={{ height: 5, background: C.border, borderRadius: 4, marginBottom: 10, overflow: "hidden" }}>
+                          <div style={{
+                            height: "100%", borderRadius: 4,
+                            width: `${b.pct}%`,
+                            background: pctColor(b.pct),
+                            transition: "width 0.5s ease",
+                          }} />
+                        </div>
+
+                        {/* Numbers row */}
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{ fontSize: 18, fontWeight: 800, color: C.paid }}>{b["שולם"]}</div>
+                            <div style={{ fontSize: 10, color: C.muted }}>שילמו</div>
+                          </div>
+                          <div style={{ width: 1, background: C.border }} />
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{ fontSize: 18, fontWeight: 800, color: C.unpaid }}>{b["לא שולם"]}</div>
+                            <div style={{ fontSize: 10, color: C.muted }}>לא שילמו</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
